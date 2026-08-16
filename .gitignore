@@ -1,0 +1,13 @@
+.env
+*.db
+resume/*.pdf
+resume/*.docx
+cover_letters/*.pdf
+cover_letters/*.txt
+__pycache__/
+*.pyc
+.venv/
+venv/
+.playwright/
+data/*.db
+.DS_Store

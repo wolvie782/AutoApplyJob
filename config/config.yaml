@@ -1,0 +1,82 @@
+# ─────────────────────────────────────────────────────────────
+# Personal data lives in .env (gitignored) — not here.
+# This file is safe to commit.
+# ─────────────────────────────────────────────────────────────
+
+profile:
+  resume_path: "resume/resume.pdf"
+  country_code: "+91"
+
+experience:
+  current_ctc_numeric: 1600000
+  expected_ctc_numeric: 3500000
+  expected_ctc_min: 3000000
+  expected_ctc_max: 3500000
+  currently_employed: true
+
+job_search:
+  target_roles:
+    - "SDE 2"
+    - "SDE 3"
+    - "Senior Software Engineer"
+    - "Software Engineer II"
+    - "Software Engineer III"
+    - "Senior Backend Engineer"
+    - "Senior Full Stack Engineer"
+    - "Senior Python Developer"
+  keywords:
+    - "Senior Software Engineer"
+    - "SDE2"
+    - "SDE3"
+    - "Backend Engineer"
+  min_experience_required: 3
+  location_priority:
+    - "Remote"
+    - "Pune"
+    - "Mumbai"
+    - "Hyderabad"
+    - "Bangalore"
+  job_types:
+    - "Full-time"
+  date_posted: "past_week"     # today, past_week, past_month
+  max_applications_per_run: 30
+
+platforms:
+  linkedin:
+    enabled: true
+    easy_apply_only: true
+    blacklisted_companies: []
+    blacklisted_keywords:
+      - "internship"
+      - "intern"
+      - "fresher"
+  instahyre:
+    enabled: true
+    blacklisted_companies: []
+  indeed:
+    enabled: true
+    easy_apply_only: true
+    blacklisted_companies: []
+  jobright:
+    enabled: true
+    blacklisted_companies: []
+  uplers:
+    enabled: true
+    blacklisted_companies: []
+
+ai:
+  provider: "anthropic"                  # "anthropic" or "openai"
+  # Anthropic models: claude-haiku-4-5-20251001 | claude-sonnet-5 | claude-opus-5
+  anthropic_model: "claude-haiku-4-5-20251001"
+  # OpenAI models: gpt-4o-mini | gpt-4o | gpt-4-turbo
+  openai_model: "gpt-4o-mini"
+  humanize: true
+  cover_letter_max_words: 250
+
+work_preferences:
+  work_authorization: true
+  willing_to_relocate: true
+  prefer_remote: true
+  open_to_hybrid: true
+  open_to_onsite: true
+  visa_sponsorship_required: false

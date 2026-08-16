@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoApplyJob — Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0f9ff', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .platform-badge {
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-linkedin  { background:#dbeafe; color:#1d4ed8; }
+    .badge-instahyre { background:#f3e8ff; color:#7c3aed; }
+    .badge-indeed    { background:#fef9c3; color:#a16207; }
+    .badge-jobright  { background:#dcfce7; color:#15803d; }
+    .badge-uplers    { background:#fee2e2; color:#b91c1c; }
+    .badge-all       { background:#f3f4f6; color:#374151; }
+    tr:hover td { background: #f8fafc; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-gray-900">AutoApplyJob</h1>
+        <p class="text-xs text-gray-500">Monu Mahto · Full Stack Engineer</p>
+      </div>
+    </div>
+    <button onclick="location.reload()" class="text-sm text-brand-600 hover:text-brand-700 flex items-center gap-1">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+      Refresh
+    </button>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Stats row -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+      <!-- Total -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5 col-span-2 md:col-span-1">
+        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Applied</p>
+        <p class="text-4xl font-bold text-gray-900 mt-1">{{ stats.total }}</p>
+      </div>
+      <!-- Per platform -->
+      {% set platform_colors = {
+        'linkedin': 'text-blue-600 bg-blue-50',
+        'instahyre': 'text-purple-600 bg-purple-50',
+        'indeed': 'text-yellow-600 bg-yellow-50',
+        'jobright': 'text-green-600 bg-green-50',
+        'uplers': 'text-red-600 bg-red-50'
+      } %}
+      {% for p in ['linkedin','instahyre','indeed','jobright','uplers'] %}
+      <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ p }}</p>
+        <p class="text-3xl font-bold {{ platform_colors.get(p, 'text-gray-700') | replace('bg-','') | replace('-50','') }} mt-1">
+          {{ stats.by_platform.get(p, 0) }}
+        </p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Last 7 days mini-chart -->
+    {% if stats.by_day %}
+    <div class="bg-white rounded-xl border border-gray-200 p-5 mb-8">
+      <h2 class="text-sm font-semibold text-gray-700 mb-4">Applications — Last 7 Days</h2>
+      <div class="flex items-end gap-2 h-20">
+        {% set max_day = stats.by_day.values() | max %}
+        {% for day, count in stats.by_day.items() %}
+        <div class="flex flex-col items-center flex-1 gap-1">
+          <span class="text-xs font-medium text-gray-600">{{ count }}</span>
+          <div class="w-full bg-brand-500 rounded-t"
+               style="height: {{ (count / max_day * 60) | int }}px; min-height:4px;"></div>
+          <span class="text-xs text-gray-400">{{ day[-5:] }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Platform filter -->
+    <div class="flex items-center gap-2 mb-4 flex-wrap">
+      <span class="text-sm text-gray-500 mr-1">Filter:</span>
+      {% for p in platforms %}
+      <a href="/?platform={{ p }}"
+         class="platform-badge badge-{{ p }} {% if selected_platform == p %}ring-2 ring-offset-1 ring-brand-500{% endif %} cursor-pointer no-underline">
+        {{ p }}
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Applications table -->
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-gray-700">
+          {{ applications | length }} Application{% if applications | length != 1 %}s{% endif %}
+        </h2>
+        <span class="text-xs text-gray-400">Most recent first</span>
+      </div>
+
+      {% if applications %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-50 border-b border-gray-100">
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">#</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Role</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Company</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Platform</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Location</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Applied</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            {% for app in applications %}
+            <tr>
+              <td class="px-4 py-3 text-gray-400 text-xs">{{ loop.index }}</td>
+              <td class="px-4 py-3">
+                {% if app.url %}
+                <a href="{{ app.url }}" target="_blank"
+                   class="font-medium text-gray-900 hover:text-brand-600 hover:underline">
+                  {{ app.job_title or 'Unknown Role' }}
+                </a>
+                {% else %}
+                <span class="font-medium text-gray-900">{{ app.job_title or 'Unknown Role' }}</span>
+                {% endif %}
+              </td>
+              <td class="px-4 py-3 text-gray-600">{{ app.company or '—' }}</td>
+              <td class="px-4 py-3">
+                <span class="platform-badge badge-{{ app.platform }}">{{ app.platform }}</span>
+              </td>
+              <td class="px-4 py-3 text-gray-500 text-xs">{{ app.location or '—' }}</td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-green-700">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  {{ app.status | title }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-gray-400 text-xs">
+                {{ app.applied_at[:16].replace('T', ' ') if app.applied_at else '—' }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="py-20 text-center text-gray-400">
+        <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <p class="text-sm font-medium">No applications yet</p>
+        <p class="text-xs mt-1">Run <code class="bg-gray-100 px-1 rounded">python -m src.main start</code> to begin</p>
+      </div>
+      {% endif %}
+    </div>
+  </main>
+</body>
+</html>
