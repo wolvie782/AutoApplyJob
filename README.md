@@ -107,18 +107,20 @@ python -m src.main test-login -p linkedin
 
 ## Common form questions (pre-configured)
 
-| Question | Answer |
+All answers are loaded from your `.env` file — nothing personal is hardcoded.
+
+| Question | Env Variable |
 |---|---|
-| Total years of experience | 4 |
-| Current CTC | 16 LPA |
-| Expected CTC | 35 LPA |
-| Notice period | 30 days |
-| Current company | Fynd (Reliance Retail) |
-| Current designation | Software Development Engineer I |
-| Gender | Male |
-| Nationality | Indian |
-| Work authorization | Yes |
-| Willing to relocate | Yes |
+| Total years of experience | `EXP_YEARS` |
+| Current CTC | `EXP_CURRENT_CTC` |
+| Expected CTC | `EXP_EXPECTED_CTC` |
+| Notice period | `EXP_NOTICE_PERIOD` |
+| Current company | `EXP_CURRENT_COMPANY` |
+| Current designation | `EXP_CURRENT_DESIGNATION` |
+| Gender | `PROFILE_GENDER` |
+| Nationality | `PROFILE_NATIONALITY` |
+| Work authorization | `work_preferences.work_authorization` in config.yaml |
+| Willing to relocate | `work_preferences.willing_to_relocate` in config.yaml |
 
 ## Project structure
 
